@@ -1,5 +1,5 @@
 function  ZScoreTranslation
-%对多个图像进行Z变换。
+%对多个图像进行Z变换
 %%
 %读取图像
 [file_name1,path_source1,~] = uigetfile({'*.img';'*.nii'},'MultiSelect','on','请选择图像');
