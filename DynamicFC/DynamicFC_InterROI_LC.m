@@ -13,7 +13,7 @@ if nargin<3
     window_step=1;
 end
 if nargin<4
-    window_length=18;
+    window_length=17;
 end
 %% =========================获得所有被试mat的路径=================================
 if nargin<1
@@ -29,10 +29,10 @@ if nargin<1
 end
 %% =========================结果目录==============================
 if nargin<2
-    pathResult='D:\myCodes\MVPA_LIChao\MVPA_MATLAB\DynamicFC';
+    pathResult='D:\WorkStation_2018\WorkStation_2018_08_Doctor_DynamicFC_Psychosis';
 end
 % path_result= uigetdir({},'select result folder');
-mkdir(pathResult,'DynamicFC');
+mkdir(pathResult,'DynamicFC17_1');
 pathResult=fullfile(pathResult,'DynamicFC');
 mkdir(fullfile(pathResult,'zStaticFC'));
 mkdir(fullfile(pathResult,'zDynamicFC'));
@@ -109,4 +109,13 @@ while window_end<=volume
     count=count+1;
 end
 % stdOfZDynamicFC=std(zDynamicFC,0,3);%求在滑动窗方向的标准差。
+end
+function myPlot()
+    for i=1:50
+        subplot(5,10,i)
+        imagesc(zDynamicFC(:,:,i*1));
+        colormap('jet')
+        axis square
+        axis off
+    end
 end
