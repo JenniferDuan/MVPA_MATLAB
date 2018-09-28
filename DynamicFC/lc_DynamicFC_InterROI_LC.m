@@ -1,4 +1,4 @@
-function DynamicFC_InterROI_LC(allSubjPath,pathResult,window_step,window_length)
+function lc_DynamicFC_InterROI_LC(allSubjPath,pathResult,window_step,window_length)
 % 计算一组被试的ROI wise的动态功能连接和了静态功能连接
 % input：
 %   allVolume：一组被试的时间序列矩阵，每一个被试的数据size为：T*N，T为时间点个数，N为ROI的个数
@@ -110,12 +110,12 @@ while window_end<=volume
 end
 % stdOfZDynamicFC=std(zDynamicFC,0,3);%求在滑动窗方向的标准差。
 end
-function myPlot()
-    for i=1:50
-        subplot(5,10,i)
-        imagesc(zDynamicFC(:,:,i*1));
-        colormap('jet')
-        axis square
-        axis off
-    end
-end
+% function myPlot()
+%     for i=1:50
+%         subplot(5,10,i)
+%         imagesc(zDynamicFC(:,:,i*1));
+%         colormap('jet')
+%         axis square
+%         axis off
+%     end
+% end

@@ -1,4 +1,4 @@
-function proportionOfOneRrange_slideWindow(numOfWindows)
+function lc_ProportionOfOneRrange_slideWindow(numOfWindows)
 % 此代码用来计算动态功能连接中，对于多个slide window的Pearson's r向量（经过Fisher’s z-transformed），
 % 落在某个区间的r数目占总r数目的比值。
 % refer to {Dynamic Resting-State Functional Connectivity in Major Depression}
