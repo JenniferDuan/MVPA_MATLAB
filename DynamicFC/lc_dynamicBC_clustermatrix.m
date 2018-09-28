@@ -1,5 +1,5 @@
 function [save_dir,IDX_subjre]=lc_DynamicBC_clustermatrix(k,outputd,matname,subjdir,CluMet)
-% k=8
+% k=8;
 % subjdir='D:\WorkStation_2018\WorkStation_2018_08_Doctor_DynamicFC_Psychosis\DynamicFC18_1_screened\Dynamic\HC'
 % outputd='D:\WorkStation_2018\WorkStation_2018_08_Doctor_DynamicFC_Psychosis\DynamicFC18_1_screened\Dynamic'
 % CluMet='Correlation'
