@@ -7,7 +7,8 @@ function lc_InsertSepLineToNet(net,sepIndex)
 %% input
 if nargin<1
     net=importdata('D:\WorkStation_2018\WorkStation_2018_08_Doctor_DynamicFC_Psychosis\DynamicFC18_1_screened\Dynamic\mat_Correlation_Kmeans_8\Cluster_8.mat');
-    sepIndex=2*[0,5,10,17,28,30,44,57];% Yeo17 net atals
+%     sepIndex=2*[0,5,10,17,28,30,44,57];% Yeo17 net atals
+    sepIndex=importdata('D:\myCodes\Github_Related\Github_Code\Template_Yeo2011\sepIndex.mat');
     if size(net,1)~=size(net,2)
         error('²»ÊÇ¶Ô³Æ¾ØÕó');
     end
