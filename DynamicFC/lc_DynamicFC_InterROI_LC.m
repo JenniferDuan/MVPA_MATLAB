@@ -17,7 +17,7 @@ if nargin<4
 end
 %% =========================获得所有被试mat的路径=================================
 if nargin<1
-    allSubjPath='F:\Data\Results\ROISignals_FumImgARWSFC_mat';
+    allSubjPath='F:\Data\Results\ROISignals_FumImgARWSFC_mat_screened';
     allSubjPath=dir(allSubjPath);
     folder={allSubjPath.folder};
     name={allSubjPath.name};
@@ -32,7 +32,6 @@ if nargin<2
     pathResult='D:\WorkStation_2018\WorkStation_2018_08_Doctor_DynamicFC_Psychosis';
 end
 % path_result= uigetdir({},'select result folder');
-mkdir(pathResult,'DynamicFC17_1');
 pathResult=fullfile(pathResult,'DynamicFC');
 mkdir(fullfile(pathResult,'zStaticFC'));
 mkdir(fullfile(pathResult,'zDynamicFC'));
@@ -40,18 +39,6 @@ pathResult_dynamic=fullfile(pathResult,'zDynamicFC');
 pathResult_static=fullfile(pathResult,'zStaticFC');
 
 %% =====calculate both the static and dynamic Inter-ICN FC===========
-%计算dynamic FC窗口个数
-matPath=allSubjPath{1};
-allVolume=importdata(matPath);
-volume=size(allVolume,1);% dynamic FC parameters
-window_end=window_length;
-count=1;
-while window_end <volume
-    count=count+1;%计算多少个窗，即多少个动态矩阵,用来分配空间给ZFC_dynamic,从而加快速度
-    window_end=window_end+window_step;
-end
-
-% calc dFC
 fprintf('==================================\n');
 fprintf(' Calculating dynamic FC\n');
 nSubj=length(allSubjPath);
@@ -110,12 +97,3 @@ while window_end<=volume
 end
 % stdOfZDynamicFC=std(zDynamicFC,0,3);%求在滑动窗方向的标准差。
 end
-% function myPlot()
-%     for i=1:50
-%         subplot(5,10,i)
-%         imagesc(zDynamicFC(:,:,i*1));
-%         colormap('jet')
-%         axis square
-%         axis off
-%     end
-% end

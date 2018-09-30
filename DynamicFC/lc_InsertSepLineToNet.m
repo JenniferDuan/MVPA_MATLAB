@@ -14,7 +14,7 @@ if nargin<1
     end
 end
 %%
-figure
+% figure
 imagesc(net)
 % insert separate line
 lc_line(sepIndex,length(net))
