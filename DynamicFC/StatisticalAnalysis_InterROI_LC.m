@@ -1,6 +1,6 @@
 function  [p, h_fdr]=StatisticalAnalysis_InterROI_LC(ID_Mask)
 % 对ROI wise的static/dynamic FC 进行统计分析
-%input：
+%%input：
 % ZFC_*：ROI wise的静态和动态功能连接矩阵,size=N*N,N为ROI个数
 % ID_Mask：感兴趣ROI的id,缺省则对所有的连接进行统计
 % output：

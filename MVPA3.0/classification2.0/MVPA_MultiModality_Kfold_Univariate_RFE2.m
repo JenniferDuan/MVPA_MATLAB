@@ -136,9 +136,9 @@ for i=1:opt.K
     %             [COEFF,dataTrain] = pca(dataTrain);%分别对训练样本、测试样本进行主成分降维。
     %             dataTest = dataTest*COEFF;
     % step4：Feature selection---RFE
-    tic;
+%     tic;
     [ feature_ranking_list ] = featureSelection_RFE_SVM2( dataTrain,labelTrain,opt );
-    toc
+%     toc
     % step5： training model and predict test data using different feature subset
     numOfMaxFeatureQuantity=min(opt.Max_FeatureQuantity,length(Index_ttest2));%最大特征数
     j=0;

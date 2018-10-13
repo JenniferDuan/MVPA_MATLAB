@@ -1,4 +1,3 @@
-% -*- coding: utf-8 -*-
 function [Accuracy, Sensitivity, Specificity, PPV, NPV, Decision, AUC, w_M_Brain, w_M_Brain_3D, label_ForPerformance] =...
     SVM_LC_Kfold_PCA(K)
 %此代码在heart数据集上测试成功
@@ -6,6 +5,9 @@ function [Accuracy, Sensitivity, Specificity, PPV, NPV, Decision, AUC, w_M_Brain
 %output：分类表现以及K-fold的平均分类权重; label_ForPerformance=随机化处理后的label，用来绘制ROC曲线
 % path=pwd;
 % addpath(path);
+% psqiP=Scale_Patient.data(:,2);
+% psqiC=Scale_Control.data(:,2);
+% allPSQI=[psqiP;psqiC];
 %%
 if nargin<1
     K=5;
@@ -25,6 +27,12 @@ data_inmask=data(implicitmask,:);%内部mask内的data
 data_inmask=data_inmask';
 data_inmask_p=data_inmask(label==1,:);
 data_inmask_c=data_inmask(label==0,:);
+% regress out psqi
+% sortedDataInmask=[data_inmask_p;data_inmask_c];
+% regressOutedSortedDataInmask=regressOutCovariance(sortedDataInmask,allPSQI);
+% data_inmask_p=regressOutedSortedDataInmask(1:size(data_inmask_p,1),:);
+% data_inmask_c=regressOutedSortedDataInmask(size(data_inmask_p,1)+1:end,:);
+%
 %% 预分配空间
 Accuracy=zeros(K,1);Sensitivity =zeros(K,1);Specificity=zeros(K,1);
 AUC=zeros(K,1);Decision=cell(K,1);PPV=zeros(K,1); NPV=zeros(K,1);
@@ -43,11 +51,10 @@ Predict=NaN(N,1);
 % label2=label;
 % 多线程准备完毕
 h = waitbar(0,'...');
-% s=rng;%可重复、一致
-% rng(s);%可重复、一致
-indices = crossvalind('Kfold', N, K);%此处不受随机种子点控制，因此每次结果还是不一样。
-indices_p = crossvalind('Kfold', n_patients, K);%此处不受随机种子点控制，因此每次结果还是不一样。
-indices_c = crossvalind('Kfold', n_controls, K);%此处不受随机种子点控制，因此每次结果还是不一样。
+% 此处不受随机种子点控制
+indices = crossvalind('Kfold', N, K);
+indices_p = crossvalind('Kfold', n_patients, K);
+indices_c = crossvalind('Kfold', n_controls, K);
 switch K<N
     case 1
         % initialize progress indicator
