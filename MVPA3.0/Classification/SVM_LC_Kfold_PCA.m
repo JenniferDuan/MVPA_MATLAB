@@ -1,5 +1,5 @@
 function [Accuracy, Sensitivity, Specificity, PPV, NPV, Decision, AUC, w_M_Brain, w_M_Brain_3D, label_ForPerformance] =...
-    SVM_LC_Kfold_PCA(K)
+    SVM_LC_Kfold_PCA(K,allPSQI)
 %此代码在heart数据集上测试成功
 %input：K=K-fold cross validation,K<N
 %output：分类表现以及K-fold的平均分类权重; label_ForPerformance=随机化处理后的label，用来绘制ROC曲线
@@ -9,6 +9,14 @@ function [Accuracy, Sensitivity, Specificity, PPV, NPV, Decision, AUC, w_M_Brain
 % psqiC=Scale_Control.data(:,2);
 % allPSQI=[psqiP;psqiC];
 %%
+%%
+if nargin<2
+    p='D:\WorkStation_2018\WorkStation_2018-05_MVPA_insomnia_FCS\Degree\Results_Degree\Two-sample_t_test\ROISignals\量表\Scale_Patient.mat';
+    c='D:\WorkStation_2018\WorkStation_2018-05_MVPA_insomnia_FCS\Degree\Results_Degree\Two-sample_t_test\ROISignals\量表\Scale_Control.mat';
+    load(p);
+    load(c);
+    allPSQI=[Scale_Patient.data(:,3);Scale_Control.data(:,2)];
+end
 if nargin<1
     K=5;
 end
@@ -28,10 +36,12 @@ data_inmask=data_inmask';
 data_inmask_p=data_inmask(label==1,:);
 data_inmask_c=data_inmask(label==0,:);
 % regress out psqi
-% sortedDataInmask=[data_inmask_p;data_inmask_c];
-% regressOutedSortedDataInmask=regressOutCovariance(sortedDataInmask,allPSQI);
-% data_inmask_p=regressOutedSortedDataInmask(1:size(data_inmask_p,1),:);
-% data_inmask_c=regressOutedSortedDataInmask(size(data_inmask_p,1)+1:end,:);
+fprintf('\n Regressing out covariate...\n');
+sortedDataInmask=[data_inmask_p;data_inmask_c];
+regressOutedSortedDataInmask=regressOutCovariance(sortedDataInmask,allPSQI);
+data_inmask_p=regressOutedSortedDataInmask(1:size(data_inmask_p,1),:);
+data_inmask_c=regressOutedSortedDataInmask(size(data_inmask_p,1)+1:end,:);
+fprintf('\n Regressing out covariate Finished!\n');
 %
 %% 预分配空间
 Accuracy=zeros(K,1);Sensitivity =zeros(K,1);Specificity=zeros(K,1);
@@ -69,25 +79,22 @@ switch K<N
             Test_index_c = (indices_c == i); Train_index_c = ~Test_index_c;
             Test_data_c =data_inmask_c(Test_index_c,:);Train_data_c =data_inmask_c(Train_index_c,:);
             % all data
-            train_data=[Train_data_p;Train_data_c];
-            test_data=[Test_data_p;Test_data_c];
+            trainingData=[Train_data_p;Train_data_c];
+            testData=[Test_data_p;Test_data_c];
             % all label
             test_label = [ones(sum(indices_p==i),1);zeros(sum(indices_c==i),1)];
             train_label =  [ones(sum(indices_p~=i),1);zeros(sum(indices_c~=i),1)];
             label_ForPerformance{1,i}=test_label;
             %% 降维及归一化
-             %  按列方向归一化
-            [train_data,PS] = mapminmax(train_data');
-            train_data=train_data';
-            test_data = mapminmax('apply',test_data',PS);
-            test_data =test_data';
+             %  按列方向标准化：归一化或者normalization
+            [trainingData,testData]=lc_standardization(trainingData,testData,'scale');
             %   主成分降维
-            [COEFF, train_data] = pca(train_data);%分别对训练样本、测试样本进行主成分降维。
-            test_data = test_data*COEFF;
+            [COEFF, trainingData] = pca(trainingData);%分别对训练样本、测试样本进行主成分降维。
+            testData = testData*COEFF;
             %% 训练模型
-            model= fitclinear(train_data,train_label);
+            model= fitclinear(trainingData,train_label);
             %%
-            [predict_label, dec_values] = predict(model,test_data);
+            [predict_label, dec_values] = predict(model,testData);
             Decision{i}=dec_values(:,2);
             %% 评估模型
             [accuracy,sensitivity,specificity,ppv,npv]=Calculate_Performances(predict_label,test_label);
@@ -109,26 +116,26 @@ switch K<N
             waitbar(i/K,h,sprintf('%2.0f%%', i/K*100)) ;
             %K fold
             test_index = (indices == i); train_index = ~test_index;
-            train_data =data_inmask(train_index,:);
+            trainingData =data_inmask(train_index,:);
             train_label = label(train_index,:);
-            test_data = data_inmask(test_index,:);
+            testData = data_inmask(test_index,:);
             test_label = label(test_index);
             label_ForPerformance{1,i}=test_label;
             %% 降维及归一化
             %主成分降维
-            [COEFF, train_data] = pca(train_data);%分别对训练样本、测试样本进行主成分降维。
-            test_data = test_data*COEFF;
+            [COEFF, trainingData] = pca(trainingData);%分别对训练样本、测试样本进行主成分降维。
+            testData = testData*COEFF;
             %按列方向归一化
             % [train_data,test_data,~] = ...
             %    scaleForSVM(train_data,test_data,0,1);%一起按列方向归一化，此处有争议，但从实际角度来说，是可以的。
-            [train_data,PS] = mapminmax(train_data');
-            train_data=train_data';
-            test_data = mapminmax('apply',test_data',PS);
-            test_data =test_data';
+            [trainingData,PS] = mapminmax(trainingData');
+            trainingData=trainingData';
+            testData = mapminmax('apply',testData',PS);
+            testData =testData';
             %% 训练模型
-            model= fitclinear(train_data,train_label);
+            model= fitclinear(trainingData,train_label);
             %%
-            [predict_label, dec_values] = predict(model,test_data);
+            [predict_label, dec_values] = predict(model,testData);
             Decision{i}=dec_values(:,2);
             Predict(i,1)=predict_label;
             %%  空间判别模式

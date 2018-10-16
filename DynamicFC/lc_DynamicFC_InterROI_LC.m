@@ -13,11 +13,11 @@ if nargin<3
     window_step=1;
 end
 if nargin<4
-    window_length=17;
+    window_length=20;
 end
 %% =========================获得所有被试mat的路径=================================
 if nargin<1
-    allSubjPath='F:\Data\Results\ROISignals_FumImgARWSFC_mat_screened';
+    allSubjPath='D:\WorkStation_2018\WorkStation_2018_08_Doctor_DynamicFC_Psychosis\Data\ROISignals_FumImgARWSFC_screened';
     allSubjPath=dir(allSubjPath);
     folder={allSubjPath.folder};
     name={allSubjPath.name};
@@ -29,7 +29,7 @@ if nargin<1
 end
 %% =========================结果目录==============================
 if nargin<2
-    pathResult='D:\WorkStation_2018\WorkStation_2018_08_Doctor_DynamicFC_Psychosis';
+    pathResult='D:\WorkStation_2018\WorkStation_2018_08_Doctor_DynamicFC_Psychosis\Data\zDynamic\DynamicFC20_1';
 end
 % path_result= uigetdir({},'select result folder');
 pathResult=fullfile(pathResult,'DynamicFC');
@@ -46,11 +46,11 @@ for s=1:nSubj
     fprintf('正在计算第%d/%d个被试...\n',s,nSubj);
     matPath=allSubjPath{s};
     allVolume=importdata(matPath);
-    [zDynamicFC,zStaticFC]=DynamicFC_interROI_oneSubj(allVolume,window_step,window_length);
+    [zDynamicFC,~]=DynamicFC_interROI_oneSubj(allVolume,window_step,window_length);
     %% =========================save============================
     [~,name,format]=fileparts(matPath);
     save([pathResult_dynamic,filesep,name,format],'zDynamicFC');
-    save([pathResult_static,filesep,name,format],'zStaticFC');
+%     save([pathResult_static,filesep,name,format],'zStaticFC');
 end
 fprintf('==================================\n');
 fprintf('Dynamic FC calculating completed!\n');

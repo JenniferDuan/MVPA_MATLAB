@@ -18,6 +18,7 @@ DependentFiles=cell(1,numel(uniLabel));
 for i=1:numel(uniLabel)
     DependentFiles{1,i}=data(label==uniLabel(i),:);
 end
-[F, P] = My_gretna_ANCOVA1({rand(100,67541),rand(40,67541),rand(50,67541)},[]);
+% tic;[F, P] = My_gretna_ANCOVA1({a,b},[]);toc
+% tic;[h,p]=ttest2(a,b);toc
 [F, P] = My_gretna_ANCOVA1(DependentFiles, Covariates);% 使用GRETNA的代码，注意要引用。
 end

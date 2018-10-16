@@ -8,12 +8,14 @@ function lc_kmeans_identifyK(data,kRange)
 %% =============== input=================
 % rng default; % For reproducibility
 % data = [randn(300,2)*4;randn(300,2)*1.2;randn(300,2)*8;randn(300,2)*0.1];
-% 
+% About how to identify K, please refer to "The human cortex possesses a reconfigurable
+% dynamic network architecture that is disrupted in psychosis"
 if nargin<2
-    kRange=2:1:10;
+%     kRange=[2,4,5,8];
+    kRange=2:1:8;
 end
-nReplicates=5;%随机初始化质心次数
-distanceMethod='cityblock';
+nReplicates=10;%随机初始化质心次数
+distanceMethod='cityblock'; % L1 distance
 %% 
 [n,p]=size(data);
 %% normalizating data(option)
@@ -26,7 +28,8 @@ distanceMethod='cityblock';
 % elbow criterion ratio
 ratio=zeros(numel(kRange)-1,2);
 T=0;
-for k=kRange
+parpool(3);
+parfor k=kRange
     T=T+1;
     opts = statset('Display','off');
     [Idx,C,sumD,~] = kmeans(data,k,'Distance',distanceMethod,...

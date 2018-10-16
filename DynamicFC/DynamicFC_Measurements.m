@@ -17,10 +17,7 @@ else
     mat_template=importdata([path_source,char(file_name)]);
 end
 % 结果保存目录
-index_path_result=strfind(path_source,'\');
-path_result=path_source(1:index_path_result(end-1)-1);%获取结果文件存放路径——上一层目录
-mkdir(path_result,'ROI wise dynamic FC measurements');%在结果路径，新建文件夹，用来存放结果
-path_result=fullfile(path_result,'ROI wise dynamic FC metrics');
+path_result='D:\WorkStation_2018\WorkStation_2018_08_Doctor_DynamicFC_Psychosis\Data\zDynamic\DynamicFC17_1_screened\results\std\SZ';
 % load data and calculate measurements
 h = waitbar(0,'...');
 for i=1:n_sub
